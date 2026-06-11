@@ -1,0 +1,209 @@
+from tkinter import *
+import math
+
+root = Tk()
+root.title("Scientific Calculator")
+root.geometry("430x420")
+root.configure(bg="#1E1E2F")
+root.resizable(False, False)
+
+expression = ""
+equation = StringVar()
+
+# ---------------- FUNCTIONS ---------------- #
+
+def press(value):
+    global expression
+    expression += str(value)
+    equation.set(expression)
+
+def clear():
+    global expression
+    expression = ""
+    equation.set("")
+
+def equal():
+    global expression
+    try:
+        result = str(eval(expression))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+        expression = ""
+
+def sqrt_func():
+    global expression
+    try:
+        result = str(math.sqrt(float(expression)))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def square_func():
+    global expression
+    try:
+        result = str(float(expression) ** 2)
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def sin_func():
+    global expression
+    try:
+        result = str(math.sin(math.radians(float(expression))))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def cos_func():
+    global expression
+    try:
+        result = str(math.cos(math.radians(float(expression))))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def tan_func():
+    global expression
+    try:
+        result = str(math.tan(math.radians(float(expression))))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def log_func():
+    global expression
+    try:
+        result = str(math.log10(float(expression)))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def ln_func():
+    global expression
+    try:
+        result = str(math.log(float(expression)))
+        equation.set(result)
+        expression = result
+    except:
+        equation.set("Error")
+
+def pi_func():
+    global expression
+    expression += str(math.pi)
+    equation.set(expression)
+
+# ---------------- DISPLAY ---------------- #
+
+display = Entry(
+    root,
+    textvariable=equation,
+    font=("Arial", 18, "bold"),
+    justify="right",
+    bd=5,
+    bg="white",
+    fg="black"
+)
+
+display.grid(
+    row=0,
+    column=0,
+    columnspan=5,
+    padx=5,
+    pady=5,
+    sticky="nsew",
+    ipady=8
+)
+
+# ---------------- COLORS ---------------- #
+
+num_color = "#81D4FA"
+op_color = "#FFB74D"
+sci_color = "#9575CD"
+eq_color = "#66BB6A"
+clear_color = "#EF5350"
+
+btn_font = ("Arial", 11, "bold")
+
+# ---------------- GRID CONFIG ---------------- #
+
+for i in range(6):
+    root.grid_rowconfigure(i, weight=1)
+
+for j in range(5):
+    root.grid_columnconfigure(j, weight=1)
+
+# ---------------- BUTTONS ---------------- #
+
+buttons = [
+    ("7",1,0,num_color,lambda: press("7")),
+    ("8",1,1,num_color,lambda: press("8")),
+    ("9",1,2,num_color,lambda: press("9")),
+    ("/",1,3,op_color,lambda: press("/")),
+    ("√",1,4,sci_color,sqrt_func),
+
+    ("4",2,0,num_color,lambda: press("4")),
+    ("5",2,1,num_color,lambda: press("5")),
+    ("6",2,2,num_color,lambda: press("6")),
+    ("*",2,3,op_color,lambda: press("*")),
+    ("x²",2,4,sci_color,square_func),
+
+    ("1",3,0,num_color,lambda: press("1")),
+    ("2",3,1,num_color,lambda: press("2")),
+    ("3",3,2,num_color,lambda: press("3")),
+    ("-",3,3,op_color,lambda: press("-")),
+    ("sin",3,4,sci_color,sin_func),
+
+    ("0",4,0,num_color,lambda: press("0")),
+    (".",4,1,num_color,lambda: press(".")),
+    ("=",4,2,eq_color,equal),
+    ("+",4,3,op_color,lambda: press("+")),
+    ("cos",4,4,sci_color,cos_func),
+
+    ("tan",5,0,sci_color,tan_func),
+    ("log",5,1,sci_color,log_func),
+    ("ln",5,2,sci_color,ln_func),
+    ("π",5,3,sci_color,pi_func),
+]
+
+for text, row, col, color, cmd in buttons:
+    Button(
+        root,
+        text=text,
+        bg=color,
+        fg="white" if color != num_color else "black",
+        font=btn_font,
+        bd=0,
+        command=cmd
+    ).grid(
+        row=row,
+        column=col,
+        padx=1,
+        pady=1,
+        sticky="nsew"
+    )
+
+Button(
+    root,
+    text="CLEAR",
+    bg=clear_color,
+    fg="white",
+    font=btn_font,
+    bd=0,
+    command=clear
+).grid(
+    row=5,
+    column=4,
+    padx=1,
+    pady=1,
+    sticky="nsew"
+)
+
+root.mainloop()
