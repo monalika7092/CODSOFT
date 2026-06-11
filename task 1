@@ -1,0 +1,51 @@
+from tkinter import *
+from tkinter import messagebox
+
+# Main Window
+root = Tk()
+root.title("To-Do List")
+root.geometry("500x400")
+
+tasks = []
+
+# Functions
+def add_task():
+    task = task_entry.get()
+
+    if task != "":
+        tasks.append(task)
+        task_listbox.insert(END, task)
+        task_entry.delete(0, END)
+    else:
+        messagebox.showwarning("Warning", "Please enter a task!")
+
+def remove_task():
+    try:
+        selected = task_listbox.curselection()[0]
+        task_listbox.delete(selected)
+        tasks.pop(selected)
+    except:
+        messagebox.showwarning("Warning", "Select a task first!")
+
+def delete_all():
+    if messagebox.askyesno("Confirm", "Delete all tasks?"):
+        task_listbox.delete(0, END)
+        tasks.clear()
+
+# Heading
+Label(root, text="TO-DO LIST", font=("Arial", 18, "bold")).pack(pady=10)
+
+# Entry Box
+task_entry = Entry(root, width=40, font=("Arial", 12))
+task_entry.pack(pady=10)
+
+# Buttons
+Button(root, text="Add", width=12, command=add_task).pack(pady=5)
+Button(root, text="Remove", width=12, command=remove_task).pack(pady=5)
+Button(root, text="Delete All", width=12, command=delete_all).pack(pady=5)
+
+# Listbox
+task_listbox = Listbox(root, width=50, height=10, font=("Arial", 12))
+task_listbox.pack(pady=10)
+
+root.mainloop()
