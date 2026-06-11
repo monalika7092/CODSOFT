@@ -1,0 +1,177 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+# Main Window
+root = tk.Tk()
+root.title("Rock Paper Scissors Game")
+root.geometry("600x500")
+root.configure(bg="#1e1e2f")
+
+# Scores
+user_score = 0
+computer_score = 0
+
+choices = ["Rock", "Paper", "Scissors"]
+
+# Functions
+def play(user_choice):
+    global user_score, computer_score
+
+    computer_choice = random.choice(choices)
+
+    user_label.config(text=f"Your Choice: {user_choice}")
+    comp_label.config(text=f"Computer Choice: {computer_choice}")
+
+    if user_choice == computer_choice:
+        result = "🤝 It's a Tie!"
+        result_label.config(text=result, fg="yellow")
+
+    elif (
+        (user_choice == "Rock" and computer_choice == "Scissors")
+        or (user_choice == "Paper" and computer_choice == "Rock")
+        or (user_choice == "Scissors" and computer_choice == "Paper")
+    ):
+        result = "🎉 You Win!"
+        user_score += 1
+        result_label.config(text=result, fg="lightgreen")
+
+    else:
+        result = "😢 Computer Wins!"
+        computer_score += 1
+        result_label.config(text=result, fg="red")
+
+    score_label.config(
+        text=f"Player: {user_score}   |   Computer: {computer_score}"
+    )
+
+def reset_game():
+    global user_score, computer_score
+
+    user_score = 0
+    computer_score = 0
+
+    user_label.config(text="Your Choice:")
+    comp_label.config(text="Computer Choice:")
+    result_label.config(text="Result")
+    score_label.config(text="Player: 0 | Computer: 0")
+
+# Heading
+title = tk.Label(
+    root,
+    text="🎮 Rock Paper Scissors",
+    font=("Arial", 24, "bold"),
+    bg="#1e1e2f",
+    fg="cyan"
+)
+title.pack(pady=20)
+
+# Instruction
+instruction = tk.Label(
+    root,
+    text="Choose Rock, Paper, or Scissors",
+    font=("Arial", 14),
+    bg="#1e1e2f",
+    fg="white"
+)
+instruction.pack()
+
+# Buttons Frame
+button_frame = tk.Frame(root, bg="#1e1e2f")
+button_frame.pack(pady=30)
+
+rock_btn = tk.Button(
+    button_frame,
+    text="🪨 Rock",
+    font=("Arial", 14, "bold"),
+    bg="#ff6b6b",
+    fg="white",
+    width=12,
+    command=lambda: play("Rock")
+)
+rock_btn.grid(row=0, column=0, padx=10)
+
+paper_btn = tk.Button(
+    button_frame,
+    text="📄 Paper",
+    font=("Arial", 14, "bold"),
+    bg="#4ecdc4",
+    fg="white",
+    width=12,
+    command=lambda: play("Paper")
+)
+paper_btn.grid(row=0, column=1, padx=10)
+
+scissors_btn = tk.Button(
+    button_frame,
+    text="✂️ Scissors",
+    font=("Arial", 14, "bold"),
+    bg="#ffa502",
+    fg="white",
+    width=12,
+    command=lambda: play("Scissors")
+)
+scissors_btn.grid(row=0, column=2, padx=10)
+
+# Display Choices
+user_label = tk.Label(
+    root,
+    text="Your Choice:",
+    font=("Arial", 14),
+    bg="#1e1e2f",
+    fg="white"
+)
+user_label.pack(pady=10)
+
+comp_label = tk.Label(
+    root,
+    text="Computer Choice:",
+    font=("Arial", 14),
+    bg="#1e1e2f",
+    fg="white"
+)
+comp_label.pack()
+
+# Result Label
+result_label = tk.Label(
+    root,
+    text="Result",
+    font=("Arial", 18, "bold"),
+    bg="#1e1e2f",
+    fg="yellow"
+)
+result_label.pack(pady=20)
+
+# Scoreboard
+score_label = tk.Label(
+    root,
+    text="Player: 0 | Computer: 0",
+    font=("Arial", 16, "bold"),
+    bg="#1e1e2f",
+    fg="cyan"
+)
+score_label.pack(pady=10)
+
+# Reset Button
+reset_btn = tk.Button(
+    root,
+    text="🔄 Reset Game",
+    font=("Arial", 13, "bold"),
+    bg="purple",
+    fg="white",
+    command=reset_game
+)
+reset_btn.pack(pady=20)
+
+# Exit Button
+exit_btn = tk.Button(
+    root,
+    text="❌ Exit",
+    font=("Arial", 13, "bold"),
+    bg="red",
+    fg="white",
+    command=root.destroy
+)
+exit_btn.pack()
+
+root.mainloop()
