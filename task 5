@@ -1,0 +1,237 @@
+import tkinter as tk
+from tkinter import messagebox
+
+# ---------------- MAIN WINDOW ----------------
+root = tk.Tk()
+root.title("📒 Contact Book")
+root.geometry("900x600")
+root.configure(bg="#1E1E2F")
+root.resizable(False, False)
+
+contacts = []
+
+# ---------------- FUNCTIONS ----------------
+
+def clear_fields():
+    name_entry.delete(0, tk.END)
+    phone_entry.delete(0, tk.END)
+    email_entry.delete(0, tk.END)
+    address_entry.delete(0, tk.END)
+
+def add_contact():
+    name = name_entry.get()
+    phone = phone_entry.get()
+    email = email_entry.get()
+    address = address_entry.get()
+
+    if name == "" or phone == "":
+        messagebox.showerror("Error", "Name and Phone are required!")
+        return
+
+    contacts.append({
+        "name": name,
+        "phone": phone,
+        "email": email,
+        "address": address
+    })
+
+    messagebox.showinfo("Success", "Contact Added Successfully!")
+    clear_fields()
+    view_contacts()
+
+def view_contacts():
+    listbox.delete(0, tk.END)
+
+    for contact in contacts:
+        listbox.insert(
+            tk.END,
+            f"{contact['name']} | {contact['phone']}"
+        )
+
+def search_contact():
+    keyword = search_entry.get().lower()
+
+    listbox.delete(0, tk.END)
+
+    for contact in contacts:
+        if keyword in contact["name"].lower() or keyword in contact["phone"]:
+            listbox.insert(
+                tk.END,
+                f"{contact['name']} | {contact['phone']}"
+            )
+
+def delete_contact():
+    selected = listbox.curselection()
+
+    if not selected:
+        messagebox.showwarning("Warning", "Select a contact first!")
+        return
+
+    index = selected[0]
+    del contacts[index]
+
+    view_contacts()
+    messagebox.showinfo("Deleted", "Contact Deleted Successfully!")
+
+def update_contact():
+    selected = listbox.curselection()
+
+    if not selected:
+        messagebox.showwarning("Warning", "Select a contact first!")
+        return
+
+    index = selected[0]
+
+    contacts[index]["name"] = name_entry.get()
+    contacts[index]["phone"] = phone_entry.get()
+    contacts[index]["email"] = email_entry.get()
+    contacts[index]["address"] = address_entry.get()
+
+    view_contacts()
+    messagebox.showinfo("Updated", "Contact Updated Successfully!")
+
+def load_contact(event):
+    selected = listbox.curselection()
+
+    if selected:
+        index = selected[0]
+
+        clear_fields()
+
+        name_entry.insert(0, contacts[index]["name"])
+        phone_entry.insert(0, contacts[index]["phone"])
+        email_entry.insert(0, contacts[index]["email"])
+        address_entry.insert(0, contacts[index]["address"])
+
+# ---------------- TITLE ----------------
+
+title = tk.Label(
+    root,
+    text="📒 CONTACT BOOK",
+    font=("Arial", 22, "bold"),
+    bg="#1E1E2F",
+    fg="#00FFFF"
+)
+title.pack(pady=15)
+
+# ---------------- LEFT FRAME ----------------
+
+left_frame = tk.Frame(root, bg="#2C2C54", bd=3, relief="ridge")
+left_frame.place(x=20, y=80, width=400, height=480)
+
+# Labels & Entries
+
+labels = ["Name", "Phone", "Email", "Address"]
+
+for i, text in enumerate(labels):
+    tk.Label(
+        left_frame,
+        text=text,
+        font=("Arial", 12, "bold"),
+        bg="#2C2C54",
+        fg="white"
+    ).place(x=20, y=30 + i * 70)
+
+name_entry = tk.Entry(left_frame, font=("Arial", 11), width=25)
+name_entry.place(x=120, y=30)
+
+phone_entry = tk.Entry(left_frame, font=("Arial", 11), width=25)
+phone_entry.place(x=120, y=100)
+
+email_entry = tk.Entry(left_frame, font=("Arial", 11), width=25)
+email_entry.place(x=120, y=170)
+
+address_entry = tk.Entry(left_frame, font=("Arial", 11), width=25)
+address_entry.place(x=120, y=240)
+
+# Buttons
+
+tk.Button(
+    left_frame,
+    text="➕ Add Contact",
+    bg="#27AE60",
+    fg="white",
+    font=("Arial", 10, "bold"),
+    width=15,
+    command=add_contact
+).place(x=20, y=330)
+
+tk.Button(
+    left_frame,
+    text="✏ Update",
+    bg="#2980B9",
+    fg="white",
+    font=("Arial", 10, "bold"),
+    width=15,
+    command=update_contact
+).place(x=200, y=330)
+
+tk.Button(
+    left_frame,
+    text="🗑 Delete",
+    bg="#E74C3C",
+    fg="white",
+    font=("Arial", 10, "bold"),
+    width=15,
+    command=delete_contact
+).place(x=110, y=390)
+
+# ---------------- RIGHT FRAME ----------------
+
+right_frame = tk.Frame(root, bg="#34495E", bd=3, relief="ridge")
+right_frame.place(x=450, y=80, width=420, height=480)
+
+tk.Label(
+    right_frame,
+    text="Search Contact",
+    font=("Arial", 14, "bold"),
+    bg="#34495E",
+    fg="white"
+).pack(pady=10)
+
+search_entry = tk.Entry(right_frame, font=("Arial", 12), width=25)
+search_entry.pack(pady=5)
+
+tk.Button(
+    right_frame,
+    text="🔍 Search",
+    bg="#F39C12",
+    fg="white",
+    font=("Arial", 10, "bold"),
+    command=search_contact
+).pack(pady=5)
+
+tk.Button(
+    right_frame,
+    text="📋 View All Contacts",
+    bg="#8E44AD",
+    fg="white",
+    font=("Arial", 10, "bold"),
+    command=view_contacts
+).pack(pady=5)
+
+# Listbox
+
+listbox = tk.Listbox(
+    right_frame,
+    width=45,
+    height=15,
+    font=("Arial", 11),
+    bg="white"
+)
+listbox.pack(pady=15)
+
+listbox.bind("<<ListboxSelect>>", load_contact)
+
+# Footer
+
+footer = tk.Label(
+    root,
+    text="CodSoft Task 5 - Contact Book",
+    bg="#1E1E2F",
+    fg="lightgray",
+    font=("Arial", 10)
+)
+footer.pack(side="bottom", pady=10)
+
+root.mainloop()
